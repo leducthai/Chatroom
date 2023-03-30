@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'base/room.css' %}">
+
+<div class="room_container">
+    <div>
+        <h1>{{room.name}}</h1>
+
+        <p>{{romm.description}}</p>
+        <div class="comments_wrapper">
+            <h3>Comversations</h3>
+            <hr>
+            {% for comment in room_messages %}
+                <div>
+                    {% if request.user == comment.user%}
+                    <a href="{% url 'deletemessage' comment.id %}">delete</a>
+                    <a href="{% url 'updatemessage' comment.id %}">edit</a>
+                    {% endif %}
+                    <small><a href="{% url 'profile' comment.user.id %}">@{{comment.user}}</a>    {{comment.create|timesince}} ago</small>
+                    <p>{{comment.body}}</p>
+                    <hr>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if request.user.is_authenticated %}
+        <div>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="text" name="comment" placeholder="{{request.user.username}}, do you want to comment s.t?">
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <h3>Participants</h3>
+        <hr>
+        {% for parti in participants%}
+        <div>
+            <p><a href="{% url 'profile' parti.id %}">@{{parti.username}}</a></p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %} 

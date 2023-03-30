@@ -1,0 +1,30 @@
+services:
+
+  chatroom:
+    build: .
+    depends_on:
+      db:
+        condition: service_started
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:4000"    
+    volumes:
+      - .:/chatroom
+    ports:
+      - "4000:4000"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+
+  
